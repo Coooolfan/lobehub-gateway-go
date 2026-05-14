@@ -1,8 +1,17 @@
 # Go Device Gateway
 
-`apps/device-gateway-go` is a single-instance, self-hosted Go implementation of the LobeHub Device Gateway protocol. It keeps all state in memory and does not depend on Cloudflare Durable Objects, Redis, PostgreSQL, or NATS.
+[简体中文](./README.zh-CN.md)
 
-The existing `apps/device-gateway` Cloudflare Worker remains the reference implementation. This service aims to keep the public HTTP and WebSocket behavior compatible for self-hosted deployments.
+`device-gateway-go` is a single-instance, self-hosted Go implementation of the LobeHub Device Gateway protocol. It keeps all state in memory and does not depend on Cloudflare Durable Objects, Redis, PostgreSQL, or NATS.
+
+The original Cloudflare Worker Device Gateway remains the reference implementation. This service aims to keep the public HTTP and WebSocket behavior compatible for self-hosted deployments while running as a normal Go service.
+
+## Design
+
+- Single gateway instance with in-memory connection state.
+- Platform-neutral HTTP and WebSocket server.
+- No Cloudflare Workers, Durable Objects, Redis, PostgreSQL, or NATS dependency.
+- Compatible public routes for LobeHub Server, CLI, desktop, and connected devices where practical.
 
 ## Endpoints
 
@@ -32,7 +41,7 @@ Protocol-level timeouts intentionally match the Worker implementation: devices m
 ## Run locally
 
 ```bash
-cd apps/device-gateway-go
+cd device-gateway-go
 SERVICE_TOKEN=dev-secret go run ./cmd/device-gateway-go
 ```
 
@@ -56,7 +65,7 @@ Desktop clients should use the same gateway URL.
 From the repository root:
 
 ```bash
-docker build -f apps/device-gateway-go/Dockerfile -t lobehub-device-gateway-go .
+docker build -f device-gateway-go/Dockerfile -t lobehub-device-gateway-go device-gateway-go
 docker run --rm -p 8787:8787 -e SERVICE_TOKEN=dev-secret lobehub-device-gateway-go
 ```
 
@@ -89,6 +98,6 @@ Caddy enables WebSocket proxying automatically for normal `reverse_proxy` usage.
 ## Test
 
 ```bash
-cd apps/device-gateway-go
+cd device-gateway-go
 go test ./...
 ```
